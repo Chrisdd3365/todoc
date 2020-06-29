@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
             sortMethod = SortMethod.RECENT_FIRST;
         }
 
-        updateTasks(tasks);
+        getTasks();
 
         return super.onOptionsItemSelected(item);
     }
@@ -353,6 +353,6 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     private void getProjects() {
         this.taskViewModel.getProjects().observe(this, this::updateProjectsList);
     }
-    
+
 
 }
