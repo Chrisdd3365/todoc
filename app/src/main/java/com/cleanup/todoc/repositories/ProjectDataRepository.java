@@ -3,7 +3,7 @@ package com.cleanup.todoc.repositories;
 import android.arch.lifecycle.LiveData;
 
 import com.cleanup.todoc.model.Project;
-import com.cleanup.todoc.model.database.dao.ProjectDao;
+import com.cleanup.todoc.database.dao.ProjectDao;
 
 import java.util.List;
 
@@ -14,11 +14,7 @@ public class ProjectDataRepository {
     //-- INIT
     public ProjectDataRepository(ProjectDao projectDao) { this.projectDao = projectDao; }
 
-
     //-- METHODS
-    // GET PROJECT
-    public LiveData<Project> getProject(long projectId) { return this.projectDao.getProject(projectId); }
-
     // GET PROJECTS
     public LiveData<List<Project>> getProjects() {
         return this.projectDao.getProjects();

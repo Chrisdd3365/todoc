@@ -1,4 +1,4 @@
-package com.cleanup.todoc.model.database.dao;
+package com.cleanup.todoc.database.dao;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
@@ -17,8 +17,5 @@ public interface ProjectDao {
 
     @Query("SELECT * FROM Project")
     LiveData<List<Project>> getProjects();
-
-    @Query("SELECT * FROM Project WHERE id = :projectId")
-    LiveData<Project> getProject(long projectId);
 
 }
