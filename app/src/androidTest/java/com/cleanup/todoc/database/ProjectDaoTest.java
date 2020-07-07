@@ -1,12 +1,12 @@
-package com.cleanup.todoc;
+package com.cleanup.todoc.database;
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule;
 import android.arch.persistence.room.Room;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.cleanup.todoc.database.ToDocDatabase;
 import com.cleanup.todoc.model.Project;
+import com.cleanup.todoc.utils.LiveDataTestUtil;
 
 import org.junit.After;
 import org.junit.Before;
@@ -55,5 +55,4 @@ public class ProjectDaoTest {
         // TEST
         assertEquals(1, projects.size());
     }
-
 }
