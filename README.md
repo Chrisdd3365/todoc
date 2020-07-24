@@ -6,7 +6,7 @@
 
 Todoc is an app developed with Java and allows the user to manage a list of projects and tasks. 
 
-This app has 2 functionalities: 
+This app has 4 functionalities: 
 
 - List the tasks;
 
