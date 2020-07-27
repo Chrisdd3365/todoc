@@ -1,0 +1,204 @@
+@startuml
+
+class Project {
+    public long id;
+    public String name;
+    public int color;
+
+    Project[] getAllProjects();
+    Project getProjectById(long id);
+    long getId();
+    void setId(long id);
+    String getName();
+    void setName(@NonNull String name);
+    int getColor();
+    void setColor(int color);
+    String toString();
+}
+
+class Task {
+    public long id;
+    public long projectId;
+    public String name;
+    public long creationTimestamp;
+
+    public long getId();
+    private void setId(long id);
+    public long getProjectId();
+    private void setProjectId(long projectId);
+    public Project getProject();
+    public String getName();
+    private void setName(@NonNull String name);
+    public long getCreationTimestamp();
+    private void setCreationTimestamp(long creationTimestamp);
+}
+
+class TaskAZComparator {
+    int compare(Task left, Task right);
+ }
+
+class TaskZAComparator {
+    int compare(Task left, Task right);}
+}
+
+class TaskRecentComparator {
+    int compare(Task left, Task right);
+}
+
+class TaskOldComparator {
+    int compare(Task left, Task right);
+}
+
+interface ProjectDao {
+    long createProject(Project project);
+    LiveData<List<Project>> getProjects();
+}
+
+interface TaskDao {
+    LiveData<List<Task>> getTasks();
+    long insertTask(Task task);
+    int updateTask(Task task);
+    int deleteTask(long taskId);
+}
+
+abstract class ToDocDatabase {
+    ToDocDatabase INSTANCE;
+
+    TaskDao taskDao();
+    ProjectDao projectDao();
+    ToDocDatabase getInstance(Context context);
+    Callback prepopulateDatabase();
+}
+
+class ProjectDataRepository {
+    ProjectDao projectDao;
+
+    public LiveData<List<Project>> getProjects();
+    public void createProject(Project project);
+}
+
+class TaskDataRepository {
+    TaskDao taskDao;
+
+    LiveData<List<Task>> getTasks();
+    void createTask(Task task);
+    void deleteTask(long taskId);
+    void updateTask(Task task);
+}
+
+class TaskViewModel {
+    TaskDataRepository taskDataSource;
+    ProjectDataRepository projectDataSource;
+    Executor executor;
+    LiveData<Project> currentProject;
+
+    LiveData<List<Project>> getProjects();
+    void createProject(Project project);
+    LiveData<List<Task>> getTasks();
+    void createTask(Task task);
+    void deleteTask(long itemId);
+    void updateTask(Task task);
+}
+
+class ViewModelFactory {
+    TaskDataRepository taskDataSource;
+    ProjectDataRepository projectDataSource;
+    Executor executor;
+
+    <T extends ViewModel> T create(Class<T> modelClass);
+}
+
+class Injection {
+    TaskDataRepository provideTaskDataSource(Context context);
+
+    ProjectDataRepository provideProjectDataSource(Context context);
+    Executor provideExecutor();
+    ViewModelFactory provideViewModelFactory(Context context);
+}
+
+class MainActivity {
+    TaskViewModel taskViewModel;
+    List<Project> allProjects;
+    ArrayList<Task> tasks;
+    TasksAdapter adapter;
+    SortMethod sortMethod;
+    AlertDialog dialog;
+    EditText dialogEditText;
+    Spinner dialogSpinner;
+    RecyclerView listTasks;
+    TextView lblNoTasks;
+
+    void onCreate(@Nullable Bundle savedInstanceState);
+    boolean onCreateOptionsMenu(Menu menu);
+    boolean onOptionsItemSelected(MenuItem item);
+    void onDeleteTask(Task task);
+    void onPositiveButtonClick(DialogInterface dialogInterface);
+    void showAddTaskDialog();
+    void addTask(@NonNull Task task);
+    void updateTasks(List<Task> tasks);
+    AlertDialog getAddTaskDialog();
+    void populateDialogSpinner();
+    void configureViewModel();
+    void configureRecyclerview();
+    void updateProjectsList(List<Project> projects);
+    void getTasks();
+    void getProjects();
+}
+
+enum SortMethod {
+    ALPHABETICAL,
+    ALPHABETICAL_INVERTED,
+    RECENT_FIRST,
+    OLD_FIRST,
+    NONE
+}
+
+class TasksAdapter {
+    List<Task> tasks;
+    DeleteTaskListener deleteTaskListener;
+
+    void updateTasks(@NonNull final List<Task> tasks);
+    TaskViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType);
+    void onBindViewHolder(@NonNull TaskViewHolder taskViewHolder, int position);
+    int getItemCount();
+}
+
+interface DeleteTaskListener {
+    void onDeleteTask(Task task);
+}
+
+class TaskViewHolder {
+    AppCompatImageView imgProject;
+    TextView lblTaskName;
+    TextView lblProjectName;
+    AppCompatImageView imgDelete;
+    DeleteTaskListener deleteTaskListener;
+
+    TaskViewHolder(@NonNull View itemView, @NonNull DeleteTaskListener deleteTaskListener);
+    void bind(Task task);
+}
+
+Project "1" *-- "many" Task
+
+Task +-- TaskAZComparator
+Task +-- TaskZAComparator
+Task +-- TaskOldComparator
+Task +-- TaskRecentComparator
+
+ToDocDatabase x--> ProjectDao
+ToDocDatabase x--> TaskDao
+
+TaskViewModel <.. ViewModelFactory
+Injection x--> ViewModelFactory
+
+ProjectDataRepository x--> ProjectDataRepository
+TaskDataRepository x--> TaskDataRepository
+
+MainActivity x--> SortMethod
+MainActivity x--> TasksAdapter
+MainActivity ..|> DeleteTaskListener : implements
+MainActivity x--> TaskViewModel
+DeleteTaskListener --+ TasksAdapter
+TaskViewHolder --+ TasksAdapter
+
+@enduml
